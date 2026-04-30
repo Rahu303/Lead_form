@@ -1,0 +1,75 @@
+{
+  "lead_processing": {
+    "input": {
+      "name": "Rahul Ranjan",
+      "email": "rahulranjan0327@gmail.com",
+      "phone": "6263438948",
+      "company": "Iffort",
+      "budget": "100000",
+      "timeline": "next month",
+      "goals": "Create a million dollar lead funnel",
+      "message": "I have a high-value project and want to create a contact."
+    },
+    "output": {
+      "status": "success",
+      "classification": "hot",
+      "score": 5,
+      "reasons": [
+        "strong budget signal",
+        "clear or urgent timeline",
+        "clear KeaBuilder use case"
+      ],
+      "personalized_reply": "Hi Rahul, this looks like a strong fit for KeaBuilder. I noted your goal around Create a million dollar lead funnel. Can we schedule a quick call and confirm your timeline, budget, and success criteria?",
+      "intent": "lead_qualification",
+      "hubspot_status": "created + success"
+    }
+  },
+  "chat_memory": {
+    "messages": [
+      "i have a million dollar project, create a contact for me",
+      "rahul ranjan, rahulranjan0327@gmail.com, iffort, 6263438948, 100000, next month"
+    ],
+    "output": {
+      "intent": "lead_qualification",
+      "response": "Got it. I have created/updated the contact and logged the project details for follow-up.",
+      "hubspot_action": "updated + success"
+    }
+  },
+  "content_routing": {
+    "input": {
+      "content_type": "image",
+      "prompt": "A modern landing page hero for a SaaS funnel builder"
+    },
+    "output": {
+      "status": "queued",
+      "content_type": "image",
+      "provider": "stability-or-gemini-image-provider",
+      "fallback_provider": "backup-image-provider.example.com",
+      "storage": {
+        "bucket": "keabuilder-user-assets",
+        "metadata_saved": true
+      }
+    }
+  },
+  "similarity_search": {
+    "input": {
+      "query": "SaaS onboarding flow with a friendly brand tone.",
+      "item_type": "template",
+      "items": [
+        {"id": 1, "text": "Friendly SaaS onboarding email series."},
+        {"id": 2, "text": "Modern funnel landing page for SaaS startups."},
+        {"id": 3, "text": "Conversational chatbot flow for product demos."}
+      ]
+    },
+    "output": {
+      "embedding_strategy": "prototype bag-of-words cosine similarity; production would use Gemini/OpenAI embeddings + pgvector/Pinecone",
+      "top_matches": [
+        {
+          "item": {"id": 1, "text": "Friendly SaaS onboarding email series.", "item_type": null, "metadata": null},
+          "score": 0.447,
+          "match_reason": "Shared terms: friendly, onboarding, saas"
+        }
+      ]
+    }
+  }
+}

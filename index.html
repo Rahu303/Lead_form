@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KeaBuilder AI Agent Tester</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen font-sans">
+
+    <nav class="bg-blue-600 p-4 text-white shadow-lg">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-bold">KeaBuilder AI Prototype</h1>
+            <span class="text-sm opacity-80">Connected to current server</span>
+        </div>
+    </nav>
+
+    <div class="container mx-auto py-10 px-4 grid grid-cols-1 md:grid-cols-2 gap-8">
+        
+        <!-- LEAD FORM SECTION -->
+        <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100">
+            <h2 class="text-lg font-semibold mb-4 text-gray-700">Test Lead Classification</h2>
+            <div class="space-y-4">
+                <input id="name" type="text" placeholder="Full Name" class="w-full p-2 border rounded">
+                <input id="email" type="email" placeholder="Email Address" class="w-full p-2 border rounded">
+                <input id="budget" type="text" placeholder="Budget (e.g. $10k, High, Low)" class="w-full p-2 border rounded">
+                <textarea id="goals" placeholder="What are your goals?" class="w-full p-2 border rounded h-24"></textarea>
+                <button onclick="processLead()" class="w-full bg-blue-600 text-white py-2 rounded font-medium hover:bg-blue-700 transition">
+                    Process Lead & Sync CRM
+                </button>
+            </div>
+        </div>
+
+        <!-- RESULTS SECTION -->
+        <div class="bg-gray-900 p-6 rounded-xl shadow-md text-green-400 font-mono text-sm overflow-auto max-h-[500px]">
+            <h2 class="text-white font-semibold mb-4">AI Agent Output (JSON)</h2>
+            <pre id="output">// Results will appear here...</pre>
+        </div>
+
+        <!-- CONTENT GENERATION SECTION -->
+        <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100">
+            <h2 class="text-lg font-semibold mb-4 text-gray-700">AI Content Router</h2>
+            <div class="space-y-4">
+                <select id="contentType" class="w-full p-2 border rounded">
+                    <option value="image">Generate AI Image</option>
+                    <option value="video">Generate AI Video</option>
+                    <option value="voice">Generate AI Voiceover</option>
+                </select>
+                <input id="prompt" type="text" placeholder="Describe what you want..." class="w-full p-2 border rounded">
+                <button onclick="generateContent()" class="w-full bg-purple-600 text-white py-2 rounded font-medium hover:bg-purple-700 transition">
+                    Route Request
+                </button>
+            </div>
+        </div>
+
+        <!-- PERSONALIZED REPLY DISPLAY -->
+        <div id="replyBox" class="hidden bg-blue-50 border-l-4 border-blue-500 p-4 rounded text-blue-800">
+            <h3 class="font-bold">Suggested AI Reply:</h3>
+            <p id="humanReply" class="italic mt-2"></p>
+        </div>
+
+    </div>
+
+    <script>
+        const API_BASE = window.location.origin;
+
+        async function processLead() {
+            const data = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                budget: document.getElementById('budget').value,
+                goals: document.getElementById('goals').value
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/leads/process`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+                
+                document.getElementById('output').textContent = JSON.stringify(result, null, 2);
+                
+                // Show the humanized reply specifically
+                document.getElementById('replyBox').classList.remove('hidden');
+                document.getElementById('humanReply').textContent = result.personalized_reply;
+            } catch (err) {
+                alert("Error: Make sure your FastAPI is running on port 8000");
+            }
+        }
+
+        async function generateContent() {
+            const data = {
+                content_type: document.getElementById('contentType').value,
+                 prompt: document.getElementById('prompt').value
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/content/generate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+                document.getElementById('output').textContent = JSON.stringify(result, null, 2);
+            } catch (err) {
+                alert("Error: Check console or API connection");
+            }
+        }
+    </script>
+</body>
+</html>
